@@ -270,8 +270,6 @@ def webhook():
         update = Update.de_json(json_string, app_telegram.bot)
         app_telegram.process_update(update)
         # Start the webhook
-        #app_telegram.run_webhook(listen=WEBAPP_HOST, url_path=TOKEN)
-
     return 'ok'
 
 
@@ -295,7 +293,6 @@ conv_handler = ConversationHandler(
         allow_reentry=True
 )
 app_telegram.add_handler(conv_handler)
-# Updater.start_webhook(listen='0.0.0.0', port=5000, url_path='/webhook', webhook_url=WEBAPP_HOST)
 
 app_telegram.run_webhook(listen='0.0.0.0', url_path='/webhook', webhook_url=WEBAPP_HOST)
 
