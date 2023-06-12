@@ -294,9 +294,8 @@ conv_handler = ConversationHandler(
 )
 app_telegram.add_handler(conv_handler)
 
-webhook_url = f'{WEBAPP_HOST}/webhook'
+app_telegram.run_webhook(listen=WEBAPP_HOST, url_path=TOKEN)
 
-app_telegram.run_webhook(listen='0.0.0.0', url_path='/webhook', webhook_url=webhook_url)
 
 
 if __name__ == '__main__':
