@@ -1,7 +1,6 @@
 import psycopg2
 from psycopg2 import Error
 import asyncio
-import pickle
 
 
 def save_api_key(chat_id, api_key):
@@ -119,15 +118,17 @@ def get_cancel_flag(chat_id):
     query = "SELECT cancel_flag FROM users WHERE chat_id = %s"
     cursor.execute(query, (chat_id,))
     result = cursor.fetchone()
-    if result:
-        serialized_cancel_flag = result[0]
-        print(serialized_cancel_flag)
-        cancel_flag = pickle.loads(serialized_cancel_flag)
-    else:
-        cancel_flag = asyncio.Event()
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    # Recreate the asyncio.Event object based on the stored boolean value
+    cancel_flag_state = result[0]
+    cancel_flag = asyncio.Event()
+    if cancel_flag_state:
+        cancel_flag.set()
+
     return cancel_flag
-
-
 
 def save_cancel_flag(chat_id, cancel_flag):
     conn = psycopg2.connect(
@@ -139,10 +140,10 @@ def save_cancel_flag(chat_id, cancel_flag):
     )
 
     cursor = conn.cursor()
-    
-    serialized_cancel_flag = pickle.dumps(cancel_flag)
+
+    cancel_flag_state = cancel_flag.is_set()
     query = "INSERT INTO users (chat_id, cancel_flag) VALUES (%s, %s) ON CONFLICT (chat_id) DO UPDATE SET cancel_flag = EXCLUDED.cancel_flag"
-    cursor.execute(query, (chat_id, serialized_cancel_flag))
+    cursor.execute(query, (chat_id, cancel_flag_state))
     conn.commit()
     cursor.close()
     conn.close()
