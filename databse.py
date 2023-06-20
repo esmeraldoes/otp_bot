@@ -139,6 +139,7 @@ def save_cancel_flag(chat_id, cancel_flag):
     )
 
     cursor = conn.cursor()
+    
     serialized_cancel_flag = pickle.dumps(cancel_flag)
     query = "INSERT INTO users (chat_id, cancel_flag) VALUES (%s, %s) ON CONFLICT (chat_id) DO UPDATE SET cancel_flag = EXCLUDED.cancel_flag"
     cursor.execute(query, (chat_id, serialized_cancel_flag))

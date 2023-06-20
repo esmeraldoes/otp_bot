@@ -212,7 +212,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
             await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)   
         else:
             await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)
-            cancel_flag = asyncio.Event()
+            cancel_flag.clear()
             save_cancel_flag(chat_id, cancel_flag)
            
             asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, id, cancel_flag))
