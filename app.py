@@ -50,9 +50,10 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
 async def start(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
     first_name = update.effective_user.first_name
-    api_buttons = [InlineKeyboardButton("\U0001F4F2 Get API KEY", callback_data='get_api'),
-                 InlineKeyboardButton("\U0001F4B0 Generate Access Key", callback_data='get_access')],
-                
+    api_buttons = [[InlineKeyboardButton("\U0001F4F2 Get API KEY", callback_data='get_api')],
+                 [InlineKeyboardButton("\U0001F4B0 Generate Access Key", callback_data='get_access')],
+                ]
+    
     reply_markup = InlineKeyboardMarkup(api_buttons)
     await context.bot.send_message(chat_id=chat_id, text=f"\U0001F510 Hello {first_name}, Please enter your API key.", reply_markup=reply_markup)
     return STATE_CHOOSING_OPTION
