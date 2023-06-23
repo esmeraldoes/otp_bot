@@ -204,7 +204,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
         elif response.status_code==200 and "STATUS_OK" in response.text:
             respond = response.text.split(':')[1]            
             await context.bot.send_message(chat_id=query.message.chat_id, text=f"CODE:{respond}", reply_markup=reply_markup)
-            return STATE_CHOOSING_ITEM
+            
         elif response.text == "STATUS_CANCEL":
             await context.bot.send_message(chat_id=query.message.chat_id, text="The activation was cancelled.", reply_markup=reply_markup)
     else:    
@@ -216,7 +216,6 @@ async def cancel_activation(update: Update, context: CallbackContext):
         else:
             await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)            
             cancel_flag.clear()
-            return STATE_CHOOSING_ITEM
            
         save_cancel_flag(chat_id, cancel_flag)
            
