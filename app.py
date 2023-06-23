@@ -79,10 +79,10 @@ async def generate_access_key(update: Update, context: CallbackContext) -> None:
     chat_id = callback_query.message.chat_id
     query_data = callback_query.data
     if query_data == 'get_api':
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have the api key\\! Then you can simply generate it by your access key.\n\n*Step1*: Go to otpindia.com\n*Step2*: Login with your access key\n*Step3*: Click on the profile icon on the right top\n*Step4*: Click on Generate api key option to generate\n*Step5*: Copy the api key and paste it on the bot to use\n\n*To get tutorial with images\\! Visit*:\nhttps://telegra.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key\\! Then click on “💰_Generate Access key_” option to get the link", parse_mode="MarkdownV2",disable_web_page_preview=True)
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have the api key\\! Then you can simply generate it by your access key\n\n*Step1*: Go to otpindia\\.com\n*Step2*: Login with your access key\n*Step3*: Click on the profile icon on the right top\n*Step4*: Click on Generate api key option to generate\n*Step5*: Copy the api key and paste it on the bot to use\n\n*To get tutorial with images\\! Visit*:\nhttps://telegra\\.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key\\! Then click on “💰_Generate Access key_” option to get the link", parse_mode="MarkdownV2",disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
     elif query_data == 'get_access':
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have access key\\! Then you can use this link to generate new access key for you.\n\nhttps://otpindia.com/?c=get_access&acc=1\n\n*Step1*: Go to this link\n*Step2*: Solve the Google Captcha\n*Step3*: Click on Generate Access key button to Create access key", parse_mode="MarkdownV2", disable_web_page_preview=True)
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have access key\\! Then you can use this link to generate new access key for you\n\nhttps://otpindia.com/?c=get_access&acc=1\n\n*Step1*: Go to this link\n*Step2*: Solve the Google Captcha\n*Step3*: Click on Generate Access key button to Create access key", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
 
 async def button_callback(update: Update, context: CallbackContext) -> None:
@@ -138,7 +138,10 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
                     ]
         reply_markup = InlineKeyboardMarkup(api_buttons)
         await context.bot.send_message(chat_id=chat_id, text="Add Balance", reply_markup=reply_markup)
-        return STATE_CHOOSING_ITEM 
+        return STATE_CHOOSING_ITEM
+
+        
+         
 
     elif query.data == "support_channel":
         chat_id = update.callback_query.message.chat_id
@@ -160,10 +163,10 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
     if responded == "NO_BALANCE":
         await context.bot.send_message(chat_id=query.message.chat_id, text="Your balance is low, please add money.")
     elif query.data == 'add1_balance':
-        await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n Currently you can\'t add balance directly in the bot. You need to login to otpindia.com with your access key to add balance and then you can use that balance on this bot.\n\n*For tutorial*: _Click on “💰How to Add Balance”_ Option", parse_mode="MarkdownV2")
+        await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n Currently you can\'t add balance directly in the bot\\. You need to login to otpindia\\.com with your access key to add balance and then you can use that balance on this bot\\.\n\n*For tutorial*: _Click on “💰How to Add Balance”_ Option", parse_mode="MarkdownV2")
         return STATE_CHOOSING_ITEM
     elif query.data == 'to_add':
-        await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n You need to login to otpindia.com with your access key to add balance.\n\n*Step1*: go to otpindia.com\n*Step2*: Login with your Access Key\n*Step3*: Click on Add Balance Option\n*Step4*: Choose any payment method which is suitable for you and add balance\n\n_The balance will also visible on your access key and bot_\n\n*For extended tutorial, Please visit*:\nhttps://telegra.ph/how-to-add-balance-05-31", parse_mode="MarkdownV2", disable_web_page_preview=True)
+        await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n You need to login to otpindia\\.com with your access key to add balance\\.\n\n*Step1*: go to otpindia\\.com\n*Step2*: Login with your Access Key\n*Step3*: Click on Add Balance Option\n*Step4*: Choose any payment method which is suitable for you and add balance\n\n_The balance will also visible on your access key and bot_\n\n*For extended tutorial, Please visit*:\nhttps://telegra\\.ph/how-to-add-balance-05-31", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return STATE_CHOOSING_ITEM
     else:        
         access_number = responded.split(":")[2]
