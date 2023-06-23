@@ -215,7 +215,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
             await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)   
         else:
             await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)            
-            await cancel_flag.clear()
+            cancel_flag.clear()
             return STATE_CHOOSING_ITEM
            
         save_cancel_flag(chat_id, cancel_flag)
