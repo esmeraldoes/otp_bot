@@ -72,17 +72,17 @@ async def generate_access_key(update: Update, context: CallbackContext) -> None:
             await context.bot.send_message(chat_id=update.effective_chat.id, text=message, reply_markup=reply_markup)
             return API_KEY_CHOOSE
         else:
-            message = "Invalid API key. \n\U0001F517 Please register at otpxyz.com"
-            await context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+            message = "Invalid API key. \n\U0001F517 Please create an access key and generate api key from otpindia.com"
+            await context.bot.send_message(chat_id=update.effective_chat.id, text=message, disable_web_page_preview=True)
             return STATE_CHOOSING_OPTION
         
     chat_id = callback_query.message.chat_id
     query_data = callback_query.data
     if query_data == 'get_api':
-        await context.bot.send_message(chat_id=chat_id, text="Dear user,\n If you don’t have the api key! Then you can simply generate it by your access key.\n\nStep1: Go to otpindia.net\nStep2: Login with your access key\nStep3: Click on the profile icon on the right top\nStep4: Click on Generate api key option to generate\nStep5: Copy the api key and paste it on the bot to use\n\nTo get tutorial with images! Visit:\nhttps://telegra.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key! Then click on “💰Generate Access key” option to get the link")
+        await context.bot.send_message(chat_id=chat_id, text="**Dear user**,\n If you don’t have the api key! Then you can simply generate it by your access key.\n\n**Step1**: Go to otpindia.com\n**Step2**: Login with your access key\n**Step3**: Click on the profile icon on the right top\n**Step4**: Click on Generate api key option to generate\n**Step5**: Copy the api key and paste it on the bot to use\n\n**To get tutorial with images! Visit**:\nhttps://telegra.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key! Then click on “💰__Generate Access key__” option to get the link", parse_mode="MarkdownV2",disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
     elif query_data == 'get_access':
-        await context.bot.send_message(chat_id=chat_id, text="Dear user,\n If you don’t have access key! Then you can use this link to generate new access key for you.\n\nhttps://otpindia.net/?c=get_access&acc=1\n\nStep1: Go to this link\nStep2: Solve the Google Captcha\nStep3: Click on Generate Access key button to Create access key")
+        await context.bot.send_message(chat_id=chat_id, text="**Dear user**,\n If you don’t have access key! Then you can use this link to generate new access key for you.\n\nhttps://otpindia.com/?c=get_access&acc=1\n\n**Step1**: Go to this link\n**Step2**: Solve the Google Captcha\n**Step3**: Click on Generate Access key button to Create access key", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
 
 async def button_callback(update: Update, context: CallbackContext) -> None:
@@ -142,11 +142,11 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
 
     elif query.data == "support_channel":
         chat_id = update.callback_query.message.chat_id
-        await context.bot.send_message(chat_id=chat_id, text="Dear user,\n\nTo get all the notifications,offers and updates about otpindia please join our official Telegram channel\n\nChannel Link: @otpindiaofficial\n\n\nThis is our only one official channel, please check the official username before joining any channel")
+        await context.bot.send_message(chat_id=chat_id, text="**Dear user**,\n\nTo get all the **notifications**, **offers** and **updates** about otpindia please join our official Telegram channel\n\n**Channel Link**: @otpindiaofficial\n\n\n__This is our only one official channel, please check the official username before joining any channel__")
 
     elif query.data == "help_support":
         chat_id = update.callback_query.message.chat_id
-        await context.bot.send_message(chat_id=chat_id, text="Dear user,\n\nIf you face any issues regarding otpindia! You can simply contact us on our official support at @tempotpowner\n\nUsername: @Tempotpowner\n\nPlease remember:\nOur office time is 11:00am to 7:00pm ( Monday- Saturday )\n\nYou will get replies on the office hours only")
+        await context.bot.send_message(chat_id=chat_id, text="**Dear user**,\n\nIf you face any issues regarding otpindia! You can simply contact us on our official support at @tempotpowner\n\n**Username**: @Tempotpowner\n\nPlease remember:\n__Our office time is 11:00am to 7:00pm ( Monday- Saturday )\n\nYou will get replies on the office hours only__")
 
 async def service_callback(update: Update, context: CallbackContext) -> None:   
     query = update.callback_query  
@@ -160,10 +160,10 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
     if responded == "NO_BALANCE":
         await context.bot.send_message(chat_id=query.message.chat_id, text="Your balance is low, please add money.")
     elif query.data == 'add1_balance':
-        await context.bot.send_message(chat_id=query.message.chat_id, text="Dear user,\n Currently you can\'t add balance directly in the bot. You need to login to otpindia.net with your access key to add balance and then you can use that balance on this bot.\n\nFor tutorial: Click on “💰How to Add Balance” Option")
+        await context.bot.send_message(chat_id=query.message.chat_id, text="**Dear user**,\n Currently you can\'t add balance directly in the bot. You need to login to otpindia.com with your access key to add balance and then you can use that balance on this bot.\n\n**For tutorial**: __Click on “💰How to Add Balance”__ Option", parse_mode="MarkdownV2")
         return STATE_CHOOSING_ITEM
     elif query.data == 'to_add':
-        await context.bot.send_message(chat_id=query.message.chat_id, text="Dear user,\n You need to login to otpindia.net with your access key to add balance.\n\nStep1: go to otpindia.net\nStep2: Login with your Access Key\nStep3: Click on Add Balance Option\nStep4: Choose any payment method which is suitable for you and add balance\n\nThe balance will also visible on your access key and bot\n\nFor extended tutorial, Please visit:\nhttps://telegra.ph/how-to-add-balance-05-31")
+        await context.bot.send_message(chat_id=query.message.chat_id, text="**Dear user**,\n You need to login to otpindia.com with your access key to add balance.\n\n**Step1**: go to otpindia.com\n**Step2**: Login with your Access Key\n**Step3**: Click on Add Balance Option\n**Step4**: Choose any payment method which is suitable for you and add balance\n\n__The balance will also visible on your access key and bot__\n\n**For extended tutorial, Please visit**:\nhttps://telegra.ph/how-to-add-balance-05-31", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return STATE_CHOOSING_ITEM
     else:        
         access_number = responded.split(":")[2]
@@ -174,9 +174,9 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
                 InlineKeyboardButton("Request New SMS", callback_data='3')],
                 [InlineKeyboardButton("Check OTP Code", callback_data="otp_code")]
                 ]   
-        message = "Cancel Activation or Request another SMS:"
+        message = "You have successfully Ordered a Number"
         reply_markup = InlineKeyboardMarkup(sms_keyboard)
-        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}", reply_markup=reply_markup)
+        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n**📌Note**: Sms will appear automatically when received\n\n**Cancel Activation**: to cancel the order\n**Request New SMS**: To get another otp for the same number - free\n**Check OTP Code**: show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
         cancel_flag = asyncio.Event()
         save_cancel_flag(chat_id, cancel_flag)
 
@@ -199,9 +199,9 @@ async def cancel_activation(update: Update, context: CallbackContext):
         if response.text == "STATUS_WAIT_CODE":
             await context.bot.send_message(chat_id = query.message.chat_id, text="Wait for the code", reply_markup=reply_markup)
         elif response.status_code==200 and "STATUS_OK" in response.text:
-            respond = response.text.split(':')[1]
-            
+            respond = response.text.split(':')[1]            
             await context.bot.send_message(chat_id=query.message.chat_id, text=f"CODE:{respond}", reply_markup=reply_markup)
+            return STATE_CHOOSING_ITEM
         elif response.text == "STATUS_CANCEL":
             await context.bot.send_message(chat_id=query.message.chat_id, text="The activation was cancelled.", reply_markup=reply_markup)
     else:    
@@ -211,8 +211,9 @@ async def cancel_activation(update: Update, context: CallbackContext):
             cancel_flag.set()
             await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)   
         else:
-            await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)
+            await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)            
             cancel_flag.clear()
+           
         save_cancel_flag(chat_id, cancel_flag)
            
         asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, id, cancel_flag))
