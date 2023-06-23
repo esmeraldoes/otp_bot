@@ -79,10 +79,10 @@ async def generate_access_key(update: Update, context: CallbackContext) -> None:
     chat_id = callback_query.message.chat_id
     query_data = callback_query.data
     if query_data == 'get_api':
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have the api key! Then you can simply generate it by your access key.\n\n*Step1*: Go to otpindia.com\n*Step2*: Login with your access key\n*Step3*: Click on the profile icon on the right top\n*Step4*: Click on Generate api key option to generate\n*Step5*: Copy the api key and paste it on the bot to use\n\n*To get tutorial with images! Visit*:\nhttps://telegra.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key! Then click on “💰_Generate Access key_” option to get the link", parse_mode="MarkdownV2",disable_web_page_preview=True)
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have the api key\\! Then you can simply generate it by your access key.\n\n*Step1*: Go to otpindia.com\n*Step2*: Login with your access key\n*Step3*: Click on the profile icon on the right top\n*Step4*: Click on Generate api key option to generate\n*Step5*: Copy the api key and paste it on the bot to use\n\n*To get tutorial with images\\! Visit*:\nhttps://telegra.ph/how-to-get-api-key-05-31\n\nIf you don’t have access key\\! Then click on “💰_Generate Access key_” option to get the link", parse_mode="MarkdownV2",disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
     elif query_data == 'get_access':
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have access key! Then you can use this link to generate new access key for you.\n\nhttps://otpindia.com/?c=get_access&acc=1\n\n*Step1*: Go to this link\n*Step2*: Solve the Google Captcha\n*Step3*: Click on Generate Access key button to Create access key", parse_mode="MarkdownV2", disable_web_page_preview=True)
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n If you don’t have access key\\! Then you can use this link to generate new access key for you.\n\nhttps://otpindia.com/?c=get_access&acc=1\n\n*Step1*: Go to this link\n*Step2*: Solve the Google Captcha\n*Step3*: Click on Generate Access key button to Create access key", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return STATE_CHOOSING_OPTION
 
 async def button_callback(update: Update, context: CallbackContext) -> None:
@@ -142,11 +142,11 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
 
     elif query.data == "support_channel":
         chat_id = update.callback_query.message.chat_id
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nTo get all the *notifications*, *offers* and *updates* about otpindia please join our official Telegram channel\n\n*Channel Link*: @otpindiaofficial\n\n\n_This is our only one official channel, please check the official username before joining any channel_")
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nTo get all the *notifications*, *offers* and *updates* about otpindia please join our official Telegram channel\n\n*Channel Link*: @otpindiaofficial\n\n\n_This is our only one official channel, please check the official username before joining any channel_", parse_mode="MarkdownV2")
 
     elif query.data == "help_support":
         chat_id = update.callback_query.message.chat_id
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nIf you face any issues regarding otpindia! You can simply contact us on our official support at @tempotpowner\n\n*Username*: @Tempotpowner\n\n__Please remember__:\n_Our office time is 11:00am to 7:00pm ( Monday- Saturday )\n\nYou will get replies on the office hours only_")
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nIf you face any issues regarding otpindia\\! You can simply contact us on our official support at @tempotpowner\n\n*Username*: @Tempotpowner\n\n__Please remember__:\n_Our office time is 11:00am to 7:00pm ( Monday- Saturday )\n\nYou will get replies on the office hours only_", parse_mode="MarkdownV2")
 
 async def service_callback(update: Update, context: CallbackContext) -> None:   
     query = update.callback_query  
