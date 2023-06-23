@@ -150,7 +150,8 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
     elif query.data == "help_support":
         chat_id = update.callback_query.message.chat_id
 
-        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nIf you face any issues regarding otpindia\\! You can simply contact us on our official support at [@tempotpowner](https://t.me/tempotpowner)\n\n*Username*: @Tempotpowner\n\n**Please remember**:\n- Our office time is 11:00am to 7:00pm \\( Monday-Saturday \\)\n\nYou will get replies during the office hours only", parse_mode="MarkdownV2")
+        await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nIf you face any issues regarding otpindia\\! You can simply contact us on our official support at [@tempotpowner](https://t.me/tempotpowner)\n\n*Username*: @Tempotpowner\n\n__Please remember__:\n_Our office time is 11:00am to 7:00pm \\( Monday\\-Saturday \\)\n\nYou will get replies during the office hours only_", parse_mode="MarkdownV2")
+
 
 async def service_callback(update: Update, context: CallbackContext) -> None:   
     query = update.callback_query  
