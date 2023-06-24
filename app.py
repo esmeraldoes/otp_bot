@@ -41,7 +41,11 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
     
         if response.status_code == 200 and "STATUS_OK" in response.text:
             respond = response.text.split(':')[1]
-            await context.bot.send_message(chat_id=chat_id, text=f"CODE: {respond}")
+            sms_keyboard = [InlineKeyboardButton("Request New SMS", callback_data='3'),
+                InlineKeyboardButton("Check OTP Code", callback_data="otp_code")
+                ] 
+            reply_markup = InlineKeyboardMarkup(sms_keyboard)
+            await context.bot.edit_message_reply_markup(chat_id=chat_id, text=f"CODE: {respond}", reply_markup=reply_markup)
             break 
         elif response.status_code == 200 and "STATUS_CANCEL" in response.text:
             break
@@ -139,8 +143,6 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
         reply_markup = InlineKeyboardMarkup(api_buttons)
         await context.bot.send_message(chat_id=chat_id, text="Add Balance", reply_markup=reply_markup)
         return STATE_CHOOSING_ITEM
-
-        
          
 
     elif query.data == "support_channel":
@@ -201,10 +203,12 @@ async def cancel_activation(update: Update, context: CallbackContext):
         response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getStatus&id={id}")
         if response.text == "STATUS_WAIT_CODE":
             await context.bot.send_message(chat_id = query.message.chat_id, text="Wait for the code", reply_markup=reply_markup)
+
         elif response.status_code==200 and "STATUS_OK" in response.text:
             respond = response.text.split(':')[1]            
             await context.bot.send_message(chat_id=query.message.chat_id, text=f"CODE:{respond}", reply_markup=reply_markup)
             return STATE_CHOOSING_ITEM
+        
         elif response.text == "STATUS_CANCEL":
             await context.bot.send_message(chat_id=query.message.chat_id, text="The activation was cancelled.", reply_markup=reply_markup)
     else:    
@@ -212,7 +216,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
 
         if response.status_code == 200 and "ACCESS_CANCEL" in response.text:
             cancel_flag.set()
-            await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)   
+            await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)
         else:
             await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)            
             cancel_flag.clear()
