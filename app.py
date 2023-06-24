@@ -45,7 +45,7 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
                 InlineKeyboardButton("Check OTP Code", callback_data="otp_code")
                 ] 
             reply_markup = InlineKeyboardMarkup(sms_keyboard)
-            await context.bot.edit_message_reply_markup(chat_id=chat_id, text=f"CODE: {respond}", reply_markup=reply_markup)
+            await context.bot.edit_message_reply_markup(chat_id=chat_id, message_id=Update.callback_query.message.message_id, text=f"CODE: {respond}", reply_markup=reply_markup)
             break 
         elif response.status_code == 200 and "STATUS_CANCEL" in response.text:
             break
