@@ -41,15 +41,26 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
     
         if response.status_code == 200 and "STATUS_OK" in response.text:
             respond = response.text.split(':')[1]
-            sms_keyboard = [InlineKeyboardButton("Request New SMS", callback_data='3'),
-                InlineKeyboardButton("Check OTP Code", callback_data="otp_code")
-                ] 
-            reply_markup = InlineKeyboardMarkup(sms_keyboard)
-            await context.bot.edit_message_reply_markup(chat_id=chat_id, message_id=Update.callback_query.message.message_id, text=f"CODE: {respond}", reply_markup=reply_markup)
+            ret_buttons = [[InlineKeyboardButton("\U0001F4F2 Request New SMS", callback_data='3')],
+                 [InlineKeyboardButton("\U0001F4B0 Back to Service List", callback_data='back')],
+                ]
+    
+            reply_markup = InlineKeyboardMarkup(ret_buttons)
+            texte= f"""Your requested otp for the number is 
+
+            OTP: {respond}
+
+            To get another otp for the same number! Click on Request New Sms
+
+            ———————————————————"""
+            
+            await context.bot.send_message(chat_id=chat_id, text=texte, reply_markup=reply_markup)
             break 
         elif response.status_code == 200 and "STATUS_CANCEL" in response.text:
             break
         await asyncio.sleep(2)
+    if cancel_flag.is_set():
+        del context.user_data['cancel_flag']
 
 async def start(update: Update, context: CallbackContext) -> None:
     chat_id = update.message.chat_id
@@ -143,8 +154,7 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
         reply_markup = InlineKeyboardMarkup(api_buttons)
         await context.bot.send_message(chat_id=chat_id, text="Add Balance", reply_markup=reply_markup)
         return STATE_CHOOSING_ITEM
-         
-
+    
     elif query.data == "support_channel":
         chat_id = update.callback_query.message.chat_id
         await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nTo get all the *notifications*, *offers* and *updates* about otpindia please join our official Telegram channel\n\n*Channel Link*: @otpindiaofficial\n\n\n_This is our only one official channel, please check the official username before joining any channel_", parse_mode="MarkdownV2")
@@ -159,17 +169,24 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
     chat_id = update.effective_chat.id
     api_key = get_api_key(chat_id)
 
+    response1 = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getServices')
+    services = response1.json()
+       
+    service_id_to_name = {key: value for key, value in services.items()}
+
     service = query.data
+    service_name = service_id_to_name.get(service) 
     response = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getNumber&service={service}&country=22')
     responded = response.text
     if responded == "NO_BALANCE":
         await context.bot.send_message(chat_id=query.message.chat_id, text="Your balance is low, please add money.")
     elif query.data == 'add1_balance':
         await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n Currently you can\'t add balance directly in the bot\\. You need to login to otpindia\\.com with your access key to add balance and then you can use that balance on this bot\\.\n\n*For tutorial*: _Click on “💰How to Add Balance”_ Option", parse_mode="MarkdownV2")
-        return STATE_CHOOSING_ITEM
+        return API_KEY_CHOOSE
     elif query.data == 'to_add':
         await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n You need to login to otpindia\\.com with your access key to add balance\\.\n\n*Step1*: go to otpindia\\.com\n*Step2*: Login with your Access Key\n*Step3*: Click on Add Balance Option\n*Step4*: Choose any payment method which is suitable for you and add balance\n\n_The balance will also visible on your access key and bot_\n\n*For extended tutorial, Please visit*:\nhttps://telegra\\.ph/how\\-to\\-add\\-balance\\-05\\-31", parse_mode="MarkdownV2", disable_web_page_preview=True)
-        return STATE_CHOOSING_ITEM
+        return API_KEY_CHOOSE
+    
     else:        
         access_number = responded.split(":")[2]
         main_id = responded.split(':')[1]
@@ -179,12 +196,11 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
                 InlineKeyboardButton("Request New SMS", callback_data='3')],
                 [InlineKeyboardButton("Check OTP Code", callback_data="otp_code")]
                 ]   
-        message = "You have successfully Ordered a Number"
+        message = f"You have successfully Ordered a Number for {service_name}"
         reply_markup = InlineKeyboardMarkup(sms_keyboard)
         await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n*📌Note*: Sms will appear automatically when received\n\n__Cancel Activation__: To cancel the order\n__Request New SMS__: To get another otp for the same number \\- free\n__Check OTP Code__: Show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
         cancel_flag = asyncio.Event()
         save_cancel_flag(chat_id, cancel_flag)
-
         asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, main_id, cancel_flag))
     
     return STATE_CONFIRMATION  
@@ -195,7 +211,11 @@ async def cancel_activation(update: Update, context: CallbackContext):
     api_key = get_api_key(chat_id)
     id = get_main_id(chat_id)
     cancel_flag = get_cancel_flag(chat_id)
+    ret_buttons = [[InlineKeyboardButton("\U0001F4F2 Request New SMS", callback_data='3')],
+                 [InlineKeyboardButton("\U0001F4B0 Back to Service List", callback_data='back')],
+                ]
     
+    reply_markup1 = InlineKeyboardMarkup(ret_buttons)
     button_list = [[KeyboardButton("⬅️ Back"), KeyboardButton("\U0001F3E1 Home")]]
     reply_markup = ReplyKeyboardMarkup(button_list, resize_keyboard=True,one_time_keyboard=True)
     
@@ -203,28 +223,38 @@ async def cancel_activation(update: Update, context: CallbackContext):
         response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getStatus&id={id}")
         if response.text == "STATUS_WAIT_CODE":
             await context.bot.send_message(chat_id = query.message.chat_id, text="Wait for the code", reply_markup=reply_markup)
-
         elif response.status_code==200 and "STATUS_OK" in response.text:
-            respond = response.text.split(':')[1]            
-            await context.bot.send_message(chat_id=query.message.chat_id, text=f"CODE:{respond}", reply_markup=reply_markup)
+            respond = response.text.split(':')[1]  
+            texte= f"""Your requested otp for the number is 
+
+            OTP: {respond}
+
+            To get another otp for the same number! Click on Request New Sms
+
+            ————————————————————————————————"""          
+            await context.bot.send_message(chat_id=query.message.chat_id, text=texte, reply_markup=reply_markup1)
             return STATE_CHOOSING_ITEM
-        
         elif response.text == "STATUS_CANCEL":
             await context.bot.send_message(chat_id=query.message.chat_id, text="The activation was cancelled.", reply_markup=reply_markup)
-    else:    
-        response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=setStatus&id={id}&status={query.data}")
+
+    elif query.data == "back":
+        await back(update, context)
+
+    elif query.data == "8":
+        response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=setStatus&id={id}&status=8")
 
         if response.status_code == 200 and "ACCESS_CANCEL" in response.text:
             cancel_flag.set()
-            await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)
-        else:
-            await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)            
-            cancel_flag.clear()
-           
-        save_cancel_flag(chat_id, cancel_flag)
-           
+            await context.bot.send_message(chat_id=query.message.chat_id, text="\U0001F534 Activation Cancelled\n\nPress \U0001F3E1 Home to go to main menu\n         ⬅️ Back to go back to services", reply_markup=reply_markup)   
+    elif query.data == "3":
+        
+        response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=setStatus&id={id}&status=3")
+        await context.bot.send_message(chat_id=query.message.chat_id, text="Sending SMS", reply_markup=reply_markup)
+        cancel_flag = asyncio.Event()
+        context.user_data['cancel_flag'] = cancel_flag
         asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, id, cancel_flag))
-    return STATE_CONFIRMATION
+
+        return STATE_CONFIRMATION
 
 async def back(update: Update, context: CallbackContext) -> None:
         chat_id = update.effective_chat.id
@@ -259,7 +289,7 @@ async def back(update: Update, context: CallbackContext) -> None:
         else:
             buttons.append(row + [InlineKeyboardButton("", callback_data="None")] * (3 - len(row)))
         reply_markup = InlineKeyboardMarkup(buttons)
-        await update.message.reply_text(text="Choose a service:", reply_markup=reply_markup)
+        await context.bot.send_message(chat_id, text="Choose a service:", reply_markup=reply_markup)
         return STATE_CHOOSING_ITEM
 
 async def home(update: Update, context: CallbackContext) -> None:
@@ -268,8 +298,7 @@ async def home(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text('Welcome! Choose an option:', reply_markup=reply_markup)    
     return API_KEY_CHOOSE
 
-app_telegram = ApplicationBuilder().token(os.getenv('TOKEN')).build()
-
+app_telegram = ApplicationBuilder().token(os.getenv('TOKEN')).read_timeout(30).write_timeout(30).build()
 
 @app.route('/webhook', methods=['GET','POST'])
 def webhook():
@@ -279,7 +308,6 @@ def webhook():
         app_telegram.process_update(update)
         # Start the webhook
     return 'ok'
-
 
 
 @app.route('/', methods=['GET'])
@@ -306,9 +334,5 @@ webhook_url = f'{WEBAPP_HOST}/webhook'
 
 app_telegram.run_webhook(listen='0.0.0.0', url_path='/webhook', webhook_url=webhook_url)
 
-
 if __name__ == '__main__':
-    
     app.run()
-
-
