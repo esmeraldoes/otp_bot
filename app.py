@@ -50,7 +50,7 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
 
             \U0001F4F6 OTP: {respond}
 
-            📌_To get another otp for the same number! Click on Request New Sms_"""
+            📌_To get another otp for the same number\\! Click on Request New Sms_"""
             
             await context.bot.send_message(chat_id=chat_id, text=texte, reply_markup=reply_markup,parse_mode="MarkdownV2")
             break 
@@ -227,7 +227,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
 
             \U0001F4F6 OTP: {respond} 
 
-            📌_To get another otp for the same number! Click on Request New Sms_"""          
+            📌_To get another otp for the same number\\! Click on Request New Sms_"""          
             await context.bot.send_message(chat_id=query.message.chat_id, text=texte, reply_markup=reply_markup1, parse_mode="MarkdownV2")
             return STATE_CHOOSING_ITEM
         elif response.text == "STATUS_CANCEL":
@@ -291,7 +291,7 @@ async def back(update: Update, context: CallbackContext) -> None:
 async def home(update: Update, context: CallbackContext) -> None:
     button_list = main_menu_keyboard
     reply_markup = InlineKeyboardMarkup(button_list)
-    await update.message.reply_text('Welcome! Choose an option:', reply_markup=reply_markup)    
+    await update.message.reply_text('Welcome\\! Choose an option:', reply_markup=reply_markup)    
     return API_KEY_CHOOSE
 
 app_telegram = ApplicationBuilder().token(os.getenv('TOKEN')).read_timeout(30).write_timeout(30).build()
