@@ -48,13 +48,11 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
             reply_markup = InlineKeyboardMarkup(ret_buttons)
             texte= f"""Your requested otp for the number is 
 
-            OTP: {respond}
+            \U0001F4F6 OTP: {respond}
 
-            To get another otp for the same number! Click on Request New Sms
-
-            ———————————————————"""
+            📌_To get another otp for the same number! Click on Request New Sms_"""
             
-            await context.bot.send_message(chat_id=chat_id, text=texte, reply_markup=reply_markup)
+            await context.bot.send_message(chat_id=chat_id, text=texte, reply_markup=reply_markup,parse_mode="MarkdownV2")
             break 
         elif response.status_code == 200 and "STATUS_CANCEL" in response.text:
             break
@@ -198,7 +196,7 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
                 ]   
         message = f"You have successfully Ordered a Number for {service_name}"
         reply_markup = InlineKeyboardMarkup(sms_keyboard)
-        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n*📌Note*: Sms will appear automatically when received\n\n__Cancel Activation__: To cancel the order\n__Request New SMS__: To get another otp for the same number **FREE**\n__Check OTP Code__: Show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
+        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n*📌Note*: Sms will appear automatically when received\n\n__Cancel Activation__: To cancel the order\n__Request New SMS__: To get another otp for the same number *FREE*\n__Check OTP Code__: Show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
         cancel_flag = asyncio.Event()
         save_cancel_flag(chat_id, cancel_flag)
         asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, main_id, cancel_flag))
@@ -227,12 +225,10 @@ async def cancel_activation(update: Update, context: CallbackContext):
             respond = response.text.split(':')[1]  
             texte= f"""Your requested otp for the number is 
 
-            OTP: {respond}
+            \U0001F4F6 OTP: {respond} 
 
-            To get another otp for the same number! Click on Request New Sms
-
-            ————————————————————————————————"""          
-            await context.bot.send_message(chat_id=query.message.chat_id, text=texte, reply_markup=reply_markup1)
+            📌_To get another otp for the same number! Click on Request New Sms_"""          
+            await context.bot.send_message(chat_id=query.message.chat_id, text=texte, reply_markup=reply_markup1, parse_mode="MarkdownV2")
             return STATE_CHOOSING_ITEM
         elif response.text == "STATUS_CANCEL":
             await context.bot.send_message(chat_id=query.message.chat_id, text="The activation was cancelled.", reply_markup=reply_markup)
