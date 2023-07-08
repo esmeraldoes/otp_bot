@@ -190,9 +190,8 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
         main_id = responded.split(':')[1]
         save_main_id(chat_id, main_id)
        
-        sms_keyboard = [[InlineKeyboardButton("Cancel Activation", callback_data='8'),
-                InlineKeyboardButton("Request New SMS", callback_data='3')],
-                [InlineKeyboardButton("Check OTP Code", callback_data="otp_code")]
+        sms_keyboard = [[InlineKeyboardButton("❌ Cancel Activation", callback_data='8')],
+                [InlineKeyboardButton("✅ Check OTP Code", callback_data="otp_code")]
                 ]   
         message = f"You have successfully Ordered a Number for {service_name}"
         reply_markup = InlineKeyboardMarkup(sms_keyboard)
