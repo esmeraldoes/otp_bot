@@ -198,7 +198,7 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
                 ]   
         message = f"You have successfully Ordered a Number for {service_name}"
         reply_markup = InlineKeyboardMarkup(sms_keyboard)
-        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n*📌Note*: Sms will appear automatically when received\n\n__Cancel Activation__: To cancel the order\n__Request New SMS__: To get another otp for the same number \\- free\n__Check OTP Code__: Show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
+        await context.bot.send_message(chat_id=query.message.chat_id, text=f"{message}\n\nNumber: \U0001F4F1 {access_number}\nID:{main_id}\n\n\n*📌Note*: Sms will appear automatically when received\n\n__Cancel Activation__: To cancel the order\n__Request New SMS__: To get another otp for the same number **FREE**\n__Check OTP Code__: Show the last received otp", reply_markup=reply_markup, parse_mode="MarkdownV2")
         cancel_flag = asyncio.Event()
         save_cancel_flag(chat_id, cancel_flag)
         asyncio.create_task(check_otp_code_availability(context, query.message.chat_id, api_key, main_id, cancel_flag))
