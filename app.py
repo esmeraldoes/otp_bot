@@ -162,14 +162,13 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
         await context.bot.send_message(chat_id=chat_id, text="*Dear user*,\n\nIf you face any issues regarding otpindia\\! You can simply contact us on our official support at @tempotpowner\n\n*Username*: @Tempotpowner\n\n__Please remember__:\n_Our office time is 11:00am to 7:00pm \\( Monday\\- Saturday \\)\n\nYou will get replies on the office hours only_", parse_mode="MarkdownV2")
 
 async def service_callback(update: Update, context: CallbackContext) -> None:   
-    query = update.callback_query  
+    query = update.callback_query
    
     chat_id = update.effective_chat.id
     api_key = get_api_key(chat_id)
 
     response1 = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getServices')
     services = response1.json()
-       
     service_id_to_name = {key: value for key, value in services.items()}
 
     service = query.data
@@ -234,6 +233,7 @@ async def cancel_activation(update: Update, context: CallbackContext):
 
     elif query.data == "back":
         await back(update, context)
+        return STATE_CHOOSING_ITEM
 
     elif query.data == "8":
         response = requests.get(f"https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=setStatus&id={id}&status=8")
@@ -252,45 +252,45 @@ async def cancel_activation(update: Update, context: CallbackContext):
         return STATE_CONFIRMATION
 
 async def back(update: Update, context: CallbackContext) -> None:
-        chat_id = update.effective_chat.id
-        api_key = get_api_key(chat_id)
-        
-        row = []
-        response = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getServices')
-        services = response.json()
-        response_prices = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getPrices&country=22')
-        prices = response_prices.json()
-        service_id_to_name = {key: value for key, value in services.items()}
-        service_prices = []
+    chat_id = update.effective_chat.id
+    api_key = get_api_key(chat_id)
+    
+    row = []
+    response = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getServices')
+    services = response.json()
+    response_prices = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getPrices&country=22')
+    prices = response_prices.json()
+    service_id_to_name = {key: value for key, value in services.items()}
+    service_prices = []
 
-        for service_id, prices_data in prices['22'].items():
-            service_name = service_id_to_name[service_id]
-            for price, _ in prices_data.items():
-                service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
-                service_prices.append(service_price)
-        buttons = []
-        for index, service in enumerate(service_prices):            
-            serviceme= service['service']+'  '+service['price']+'₹'
-            
-            if index==0 or index==1:
-                row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))                
-            else:
-                if len(row) == 2:
-                    buttons.append(row)
-                    row = []
-                row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))
-        if len(row) == 2:
-            buttons.append(row)
+    for service_id, prices_data in prices['22'].items():
+        service_name = service_id_to_name[service_id]
+        for price, _ in prices_data.items():
+            service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
+            service_prices.append(service_price)
+    buttons = []
+    for index, service in enumerate(service_prices):            
+        serviceme= service['service']+'  '+service['price']+'₹'
+        
+        if index==0 or index==1:
+            row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))                
         else:
-            buttons.append(row + [InlineKeyboardButton("", callback_data="None")] * (3 - len(row)))
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await context.bot.send_message(chat_id, text="Choose a service:", reply_markup=reply_markup)
-        return STATE_CHOOSING_ITEM
+            if len(row) == 2:
+                buttons.append(row)
+                row = []
+            row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))
+    if len(row) == 2:
+        buttons.append(row)
+    else:
+        buttons.append(row + [InlineKeyboardButton("", callback_data="None")] * (3 - len(row)))
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await context.bot.send_message(chat_id, text="Choose a service:", reply_markup=reply_markup)
+    return STATE_CHOOSING_ITEM
 
 async def home(update: Update, context: CallbackContext) -> None:
     button_list = main_menu_keyboard
     reply_markup = InlineKeyboardMarkup(button_list)
-    await update.message.reply_text('Welcome\\! Choose an option:', reply_markup=reply_markup)    
+    await update.message.reply_text('Welcome! Choose an option:', reply_markup=reply_markup)    
     return API_KEY_CHOOSE
 
 app_telegram = ApplicationBuilder().token(os.getenv('TOKEN')).read_timeout(30).write_timeout(30).build()
