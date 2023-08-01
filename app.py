@@ -183,8 +183,10 @@ async def service_callback(update: Update, context: CallbackContext) -> None:
     elif query.data == 'to_add':
         await context.bot.send_message(chat_id=query.message.chat_id, text="*Dear user*,\n You need to login to otpindia\\.com with your access key to add balance\\.\n\n*Step1*: go to otpindia\\.com\n*Step2*: Login with your Access Key\n*Step3*: Click on Add Balance Option\n*Step4*: Choose any payment method which is suitable for you and add balance\n\n_The balance will also visible on your access key and bot_\n\n*For extended tutorial, Please visit*:\nhttps://telegra\\.ph/how\\-to\\-add\\-balance\\-05\\-31", parse_mode="MarkdownV2", disable_web_page_preview=True)
         return API_KEY_CHOOSE
-    
-    else:        
+    elif "NO_NUMBERS" in responded:
+        await context.bot.send_message(chat_id=query.message.chat_id, text="There are no numbers with the specified parameters, try again later, or change the country.")
+
+    elif "ACCESS_NUMBER" in responded:        
         access_number = responded.split(":")[2]
         main_id = responded.split(':')[1]
         save_main_id(chat_id, main_id)
