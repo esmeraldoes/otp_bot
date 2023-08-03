@@ -112,7 +112,7 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
         service_prices = []
 
         for service_id, prices_data in prices['22'].items():
-            service_name = service_id_to_name[service_id]
+            service_name = service_id_to_name.get(service_id) 
             for price, _ in prices_data.items():
                 service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
                 service_prices.append(service_price)
@@ -266,7 +266,7 @@ async def back(update: Update, context: CallbackContext) -> None:
     service_prices = []
 
     for service_id, prices_data in prices['22'].items():
-        service_name = service_id_to_name[service_id]
+        service_name = service_id_to_name.get(service_id) 
         for price, _ in prices_data.items():
             service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
             service_prices.append(service_price)
@@ -303,7 +303,6 @@ def webhook():
         json_string = request.get_data().decode('utf-8')
         update = Update.de_json(json_string, app_telegram.bot)
         app_telegram.process_update(update)
-        # Start the webhook
     return 'ok'
 
 
