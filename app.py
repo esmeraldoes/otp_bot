@@ -108,19 +108,22 @@ async def button_callback(update: Update, context: CallbackContext) -> None:
         services = response.json()
         response_prices = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getPrices&country=22')
         prices = response_prices.json()
-        service_id_to_name = {key: value for key, value in services.items()}
-        service_prices = []
-
-        for service_id, prices_data in prices['22'].items():
-            service_name = service_id_to_name.get(service_id) 
-            for price, _ in prices_data.items():
-                service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
-                service_prices.append(service_price)
         buttons = []
-        for index, service in enumerate(service_prices):            
+        service_prices = []
+        common_services = set(services.keys()) & set(prices['22'].keys())
+
+        for index, service in enumerate(common_services):
+            service_prices.append({
+                'index': index,
+                'service': services[service],
+                'price': list(prices['22'][service].keys())[0],
+                'service_ID': service
+            })
+
+        for service in service_prices:
             serviceme= service['service']+'  '+service['price']+'₹'
             
-            if index==0 or index==1:
+            if service['index']==0 or service['index']==1:
                 row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))                
             else:
                 if len(row) == 2:
@@ -262,19 +265,22 @@ async def back(update: Update, context: CallbackContext) -> None:
     services = response.json()
     response_prices = requests.get(f'https://smstore.su/stubs/handler_api.php?api_key={api_key}&action=getPrices&country=22')
     prices = response_prices.json()
-    service_id_to_name = {key: value for key, value in services.items()}
     service_prices = []
+    common_services = set(services.keys()) & set(prices['22'].keys())
 
-    for service_id, prices_data in prices['22'].items():
-        service_name = service_id_to_name.get(service_id) 
-        for price, _ in prices_data.items():
-            service_price = {'service': service_name, 'price': price, 'service_ID':service_id}
-            service_prices.append(service_price)
+    for index, service in enumerate(common_services):
+        service_prices.append({
+            'index': index,
+            'service': services[service],
+            'price': list(prices['22'][service].keys())[0],
+            'service_ID': service
+        })
     buttons = []
-    for index, service in enumerate(service_prices):            
-        serviceme= service['service']+'  '+service['price']+'₹'
-        
-        if index==0 or index==1:
+
+    for service in service_prices:
+        serviceme = service['service']+'  '+service['price']+'₹'
+       
+        if service['index']==0 or service['index']==1:
             row.append(InlineKeyboardButton(serviceme, callback_data=service['service_ID']))                
         else:
             if len(row) == 2:
