@@ -61,7 +61,7 @@ async def check_otp_code_availability(context: CallbackContext, chat_id: int, ap
         del context.user_data['cancel_flag']
 
 async def start(update: Update, context: CallbackContext) -> None:
-    chat_id = update.message.chat_id
+    chat_id = update.effective_chat.id
     first_name = update.effective_user.first_name
     api_buttons = [[InlineKeyboardButton("\U0001F4F2 Get API KEY", callback_data='get_api')],
                  [InlineKeyboardButton("\U0001F4B0 Generate Access Key", callback_data='get_access')],
